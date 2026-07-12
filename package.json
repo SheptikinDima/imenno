@@ -10,7 +10,9 @@
     "check": "tsc -b --pretty false"
   },
   "dependencies": {
-    "framer-motion": "^12.40.0",
+    "dotenv": "^17.4.2",
+    "framer-motion": "^12.42.0",
+    "googleapis": "^173.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -21,6 +23,7 @@
     "@vercel/node": "^5.5.15",
     "@vitejs/plugin-react": "^5.1.1",
     "typescript": "~5.9.3",
+    "vercel": "^55.0.0",
     "vite": "^7.2.4"
   }
 }

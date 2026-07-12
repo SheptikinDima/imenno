@@ -1,7 +1,19 @@
-import { motion, type Variants } from "framer-motion";
+import { useEffect, useState, type UIEvent } from "react";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { LeadForm } from "./components/LeadForm";
 
 const asset = (name: string) => `/assets/${name}`;
+
+const heroNames = [
+  "Алина",
+  "Катя",
+  "София",
+  "Мария",
+  "Алиса",
+  "Полина",
+  "Вика",
+  "Дарья"
+];
 
 const bottles = [
   "Ольга",
@@ -94,7 +106,96 @@ const fadeRight: Variants = {
   }
 };
 
-export default function App() {
+function PrivacyPage() {
+  return (
+    <div className="site">
+      <header className="header">
+        <a className="logo" href="/">
+          ИМЕННО
+        </a>
+
+        <nav className="nav">
+          <a href="/#about">О бренде</a>
+          <a href="/#product">О продукте</a>
+          <a href="/#kit">Состав набора</a>
+          <a href="/#buy">Где купить</a>
+        </nav>
+      </header>
+
+      <main className="privacy-page">
+        <section className="privacy-page-inner">
+          <div className="section-label">Документы</div>
+
+          <h1>Политика конфиденциальности</h1>
+
+          <p>
+            Оператор персональных данных: Индивидуальный предприниматель Ширинян
+            Давид Торгомович, ИНН 772793703895, ОГРНИП 324774600800835.
+          </p>
+
+          <p>
+            Нажимая кнопку отправки заявки на сайте, пользователь подтверждает,
+            что ознакомлен с настоящей политикой конфиденциальности и даёт
+            согласие на обработку своих персональных данных.
+          </p>
+
+          <p>
+            К персональным данным могут относиться: имя, номер телефона, адрес
+            электронной почты, а также иная информация, которую пользователь
+            самостоятельно указывает в форме заявки.
+          </p>
+
+          <p>
+            Персональные данные используются для обработки заявки, связи с
+            пользователем, уточнения деталей заказа и предоставления информации
+            о товарах бренда «ИМЕННО».
+          </p>
+
+          <p>
+            Оператор принимает необходимые меры для защиты персональных данных и
+            не передаёт их третьим лицам, за исключением случаев,
+            предусмотренных законодательством Российской Федерации.
+          </p>
+
+          <p>
+            Пользователь вправе отозвать согласие на обработку персональных
+            данных, направив обращение на электронную почту: info@imenno.store.
+          </p>
+
+          <a className="privacy-back" href="/#contact">
+            Вернуться к форме
+          </a>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+function HomePage() {
+  const [heroNameIndex, setHeroNameIndex] = useState(0);
+  const [kitActiveIndex, setKitActiveIndex] = useState(0);
+
+  const handleKitScroll = (event: UIEvent<HTMLDivElement>) => {
+    const slider = event.currentTarget;
+    const card = slider.querySelector<HTMLElement>(".kit-card");
+
+    if (!card) return;
+
+    const gap = parseFloat(getComputedStyle(slider).gap || "0");
+    const step = card.offsetWidth + gap;
+    const index = Math.round(slider.scrollLeft / step);
+
+    setKitActiveIndex(Math.max(0, Math.min(index, kit.length - 1)));
+  };
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setHeroNameIndex((prev) => (prev + 1) % heroNames.length);
+    }, 2300);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
   return (
     <div className="site" id="top">
       <header className="header">
@@ -112,27 +213,58 @@ export default function App() {
 
       <main>
         <section className="hero">
-          <img className="hero-bg" src={asset("hero-bg.png")} alt="" />
+          <div className="hero-scene" aria-hidden="true">
+            <img className="hero-bg" src={asset("hero-bg-final.png")} alt="" />
+
+            <div className="hero-name-on-bg">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={heroNames[heroNameIndex]}
+                  className="hero-name"
+                  initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                >
+                  {heroNames[heroNameIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+          </div>
 
           <motion.div
             className="hero-content"
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, ease: "easeOut" }}
           >
-            <h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
               <span>Это именно</span>
               <span className="hero-accent">про тебя</span>
-            </h1>
+            </motion.h1>
 
-            <p>
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.18, ease: "easeOut" }}
+            >
               Премиальный крем для рук с нишевым ароматом и именем, которое
               имеет значение.
-            </p>
+            </motion.p>
 
-            <a className="hero-button" href="#buy">
+            <motion.a
+              className="hero-button"
+              href="#buy"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.42, ease: "easeOut" }}
+            >
               Где купить
-            </a>
+            </motion.a>
           </motion.div>
         </section>
 
@@ -183,31 +315,35 @@ export default function App() {
             <p className="lead">Мы верим, что всё начинается с имени.</p>
 
             <p className="lead">
-              Потому что самые тёплые подарки выбирают с мыслью о том, кому они предназначены.</p>
+              Потому что самые тёплые подарки выбирают с мыслью о том, кому они
+              предназначены.
+            </p>
           </motion.div>
 
-         <div className="bottles-marquee" aria-label="Примеры именных флаконов">
-  <div className="bottles-track">
-    {[0, 1].map((group) => (
-      <div
-        className="bottles-group"
-        key={group}
-        aria-hidden={group > 0}
-      >
-        {bottles.map((name, index) => (
-          <figure key={`${group}-${name}`}>
-            <img
-              src={asset(`asset-${String(index + 8).padStart(2, "0")}.png`)}
-              alt={group === 0 ? `Флакон ${name}` : ""}
-              loading="eager"
-              draggable="false"
-            />
-          </figure>
-        ))}
-      </div>
-    ))}
-  </div>
-</div>
+          <div className="bottles-marquee" aria-label="Примеры именных флаконов">
+            <div className="bottles-track">
+              {[0, 1].map((group) => (
+                <div
+                  className="bottles-group"
+                  key={group}
+                  aria-hidden={group > 0}
+                >
+                  {bottles.map((name, index) => (
+                    <figure key={`${group}-${name}`}>
+                      <img
+                        src={asset(
+                          `asset-${String(index + 8).padStart(2, "0")}.png`
+                        )}
+                        alt={group === 0 ? `Флакон ${name}` : ""}
+                        loading="eager"
+                        draggable="false"
+                      />
+                    </figure>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="product section" id="product">
@@ -270,7 +406,7 @@ export default function App() {
             </p>
           </motion.div>
 
-          <div className="kit-grid">
+          <div className="kit-grid" onScroll={handleKitScroll}>
             {kit.map((item, index) => (
               <motion.article
                 className="kit-card"
@@ -292,6 +428,15 @@ export default function App() {
             ))}
           </div>
 
+          <div className="kit-dots" aria-hidden="true">
+            {kit.map((_, index) => (
+              <span
+                key={index}
+                className={index === kitActiveIndex ? "active" : ""}
+              />
+            ))}
+          </div>
+
           <motion.div
             className="note"
             variants={fadeUp}
@@ -305,7 +450,7 @@ export default function App() {
           </motion.div>
         </section>
 
-        <section className="buy section" id="buy">
+        <section className="buy" id="buy">
           <motion.div
             className="buy-copy"
             variants={fadeUp}
@@ -316,9 +461,9 @@ export default function App() {
             <div className="section-label">Найдите своё имя</div>
 
             <h2>
-              Выберите имя
-              <br />и оформите заказ
-              <br />на удобной площадке
+              <span>Выберите имя</span>
+              <span>и оформите заказ</span>
+              <span>на удобной площадке</span>
             </h2>
           </motion.div>
 
@@ -331,7 +476,15 @@ export default function App() {
               viewport={{ once: true, amount: 0.35 }}
             >
               <img src={asset("new-pdf/new-pdf-05.webp")} alt="Ozon" />
-              <a href="#contact">Перейти в магазин</a>
+
+              <a
+                href="https://www.ozon.ru/seller/mipupu/?__rr=2&from=share"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>Перейти в магазин</span>
+                <span className="market-arrow">→</span>
+              </a>
             </motion.article>
 
             <motion.article
@@ -342,7 +495,15 @@ export default function App() {
               viewport={{ once: true, amount: 0.35 }}
             >
               <img src={asset("new-pdf/new-pdf-04.webp")} alt="Wildberries" />
-              <a href="#contact">Перейти в магазин</a>
+
+              <a
+                href="https://www.wildberries.ru/seller/250120152"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>Перейти в магазин</span>
+                <span className="market-arrow">→</span>
+              </a>
             </motion.article>
           </div>
         </section>
@@ -387,6 +548,12 @@ export default function App() {
             </a>
 
             <p>Подарок, который запоминается.</p>
+
+            <div className="footer-legal">
+              <p>ИП Ширинян Давид Торгомович</p>
+              <p>ИНН 772793703895</p>
+              <p>ОГРНИП 324774600800835</p>
+            </div>
           </div>
 
           <div className="footer-col">
@@ -402,9 +569,10 @@ export default function App() {
           </div>
 
           <div className="footer-col">
-            <h4>Покупка</h4>
+            <h4>Документы</h4>
             <a href="#kit">Что входит в набор</a>
             <a href="#buy">Маркетплейсы</a>
+            <a href="/privacy">Политика конфиденциальности</a>
           </div>
         </div>
 
@@ -414,4 +582,15 @@ export default function App() {
       </footer>
     </div>
   );
+}
+
+export default function App() {
+  const isPrivacyPage =
+    typeof window !== "undefined" && window.location.pathname === "/privacy";
+
+  if (isPrivacyPage) {
+    return <PrivacyPage />;
+  }
+
+  return <HomePage />;
 }

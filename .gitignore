@@ -4,3 +4,16 @@ dist
 .env.local
 .DS_Store
 .vscode
+.env
+.env.local
+.vercel
+.env*
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+*.log
+
+service-account.json
+*.json
