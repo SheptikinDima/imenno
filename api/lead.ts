@@ -3,14 +3,6 @@ dotenv.config({ path: ".env.local" });
 
 import { google } from "googleapis";
 
-type LeadBody = {
-  name?: string;
-  phone?: string;
-  email?: string;
-  page?: string;
-  referrer?: string;
-  company?: string;
-};
 
 type LeadBody = {
   name?: string;
