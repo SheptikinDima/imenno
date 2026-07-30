@@ -1,6 +1,6 @@
 import { useEffect, useState, type UIEvent } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { LeadForm } from "./components/LeadForm";
+
 
 const asset = (name: string) => `/assets/${name}`;
 
@@ -508,36 +508,7 @@ function HomePage() {
           </div>
         </section>
 
-        <section className="contact" id="contact">
-          <img className="contact-bg" src={asset("contact-bottles.png")} alt="" />
-
-          <div className="contact-inner">
-            <motion.div
-              className="contact-copy"
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.35 }}
-            >
-              <h2>
-                Есть вопрос?
-                <br />
-                Мы всегда на связи.
-              </h2>
-            </motion.div>
-
-            <motion.div
-              className="form-card"
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.35 }}
-            >
-              <h3>Оставить заявку</h3>
-              <LeadForm />
-            </motion.div>
-          </div>
-        </section>
+      
       </main>
 
       <footer className="footer">
