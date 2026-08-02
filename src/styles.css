@@ -381,73 +381,59 @@ p {
 }
 
 /* ABOUT */
-
 .about {
+  position: relative;
+  overflow: hidden;
   background: #fbf6f7;
-  padding: 86px 0 78px;
+  padding: 52px 0;
 }
 
 .about-inner {
   width: min(1200px, calc(100% - 120px));
+  min-height: 360px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 82px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: 30px;
   align-items: center;
 }
 
 .about-copy {
-  max-width: 640px;
-}
-
-.about .section-label {
-  margin-bottom: 26px;
-  color: #e87f9c;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.about h2 {
-  margin-bottom: 28px;
-  color: #161213;
-  font-family: var(--display);
-  font-size: 46px;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-}
-
-.about p {
-  max-width: 650px;
-  color: #252123;
-  font-family: var(--sans);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.45;
-}
-
-.about p + p {
-  margin-top: 18px;
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
 }
 
 .about-image {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  position: relative;
+  align-self: stretch;
+  min-height: 360px;
 }
 
 .about-image img {
-  width: 140%;
-  max-width: 2000px;
+  position: absolute;
+  top: 50%;
+  right: -110px;
+  width: 680px;
+  max-width: none;
   height: auto;
+  transform: translateY(-50%);
   object-fit: contain;
   filter: drop-shadow(0 22px 34px rgba(67, 45, 52, 0.12));
 }
 
+.about .section-label {
+  margin-bottom: 16px;
+}
+
+.about h2 {
+  margin-bottom: 18px;
+  font-size: 44px;
+}
+
+.about p + p {
+  margin-top: 10px;
+} 
 /* PERSONAL */
 
 .personal {
@@ -563,6 +549,13 @@ p {
   line-height: 1.5;
 }
 
+.product h2 {
+  max-width: none;
+}
+
+.product h2 br {
+  display: block;
+}
 .ingredients {
   display: flex;
   flex-direction: column;
@@ -713,23 +706,30 @@ p {
 }
 
 .kit-card:nth-child(1) img {
-  height: 265px;
-  transform: translateY(-12px);
+  height: 205px; /* флакон */
+  transform: none;
 }
 
 .kit-card:nth-child(2) img {
-  height: 280px;
-  transform: translateY(-4px);
+  height: 255px; /* коробка должна быть выше флакона */
+  transform: none;
 }
 
 .kit-card:nth-child(3) img {
-  height: 275px;
-  transform: translateY(-2px);
+  height: 225px; /* открытка и послание */
+  transform: none;
 }
 
 .kit-card:nth-child(4) img {
-  height: 265px;
-  transform: translateY(-4px);
+  height: 220px; /* стикерпак */
+  transform: none;
+}
+
+.kit-card img {
+  width: 100%;
+  margin-top: auto;
+  object-fit: contain;
+  object-position: center bottom;
 }
 .kit-dots {
   display: none;
@@ -844,6 +844,7 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  
 }
 
 .market-arrow {
@@ -1300,13 +1301,18 @@ p {
 
 @media (max-width: 900px) {
   .about {
-    padding: 64px 0;
+    padding: 42px 0 48px;
   }
 
   .about-inner {
     width: calc(100% - 40px);
+    min-height: auto;
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 22px;
+  }
+
+  .about-copy {
+    max-width: 100%;
   }
 
   .about h2 {
@@ -1314,15 +1320,23 @@ p {
   }
 
   .about-image {
+    position: static;
+    min-height: auto;
+    width: 100%;
+    display: flex;
     justify-content: center;
+    align-items: center;
   }
 
   .about-image img {
-    width: 100%;
+    position: static;
+    width: min(100%, 420px);
     max-width: 420px;
+    height: auto;
+    transform: none;
+    object-fit: contain;
   }
 }
-
 /* MOBILE */
 
 @media (max-width: 760px) {
@@ -1583,14 +1597,25 @@ p {
     scroll-snap-align: start;
   }
 
-  .kit-card:nth-child(1) img,
-  .kit-card:nth-child(2) img,
-  .kit-card:nth-child(3) img,
-  .kit-card:nth-child(4) img {
-    height: 250px;
-    transform: none;
-  }
+  .kit-card:nth-child(1) img {
+  height: 200px;
+  transform: none;
+}
 
+.kit-card:nth-child(2) img {
+  height: 245px;
+  transform: none;
+}
+
+.kit-card:nth-child(3) img {
+  height: 220px;
+  transform: none;
+}
+
+.kit-card:nth-child(4) img {
+  height: 215px;
+  transform: none;
+}
   .note {
     width: 100%;
     min-height: 62px;
@@ -1615,68 +1640,77 @@ p {
     line-height: 1;
   }
 
-  .buy {
-    width: calc(100% - 40px);
-    display: block;
-    padding: 70px 0 78px;
-  }
+ .buy {
+  width: min(1240px, calc(100% - 120px));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 640px) 1fr;
+  gap: 90px;
+  align-items: center;
+  padding: 110px 0 110px;
+}
 
-  .buy-copy {
-    max-width: 100%;
-  }
+.buy-copy {
+  max-width: 640px;
+}
 
-  .buy .section-label {
-    margin-bottom: 18px;
-    font-size: 12px;
-    letter-spacing: 0.12em;
-  }
+.buy .section-label {
+  margin-bottom: 20px;
+  color: var(--pink);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.buy {
+  width: calc(100% - 40px);
+  display: block;
+  padding: 64px 0 72px;
+}
 
-  .buy h2 {
-    font-size: 36px;
-    line-height: 1.05;
-    letter-spacing: 0.01em;
-  }
+.buy h2 {
+  font-size: 34px;
+  line-height: 1.2;
+}
 
-  .buy h2 span {
-    display: block;
-    white-space: normal;
-  }
+.buy h2 span {
+  display: block;
+  white-space: normal;
+}
 
-  .marketplaces {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 26px;
-    margin-top: 36px;
-  }
+.marketplaces {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 28px;
+  margin-top: 34px;
+}
 
-  .market-card {
-    width: 100%;
-    min-height: auto;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-  }
+.market-card {
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
 
-  .market-card img {
-    width: 96px;
-    height: 96px;
-    border-radius: 24px;
-  }
+.market-card img {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+}
 
-  .market-card a {
-    width: 216px;
-    min-height: 48px;
-    margin-top: 26px;
-    padding: 0 22px;
-    font-size: 14px;
-    line-height: 1;
-    justify-content: center;
-    gap: 16px;
-  }
-
+.market-card a {
+  min-width: 140px;
+  height: 38px;
+  margin-top: 16px;
+  padding: 0 14px;
+  font-size: 10px;
+  white-space: nowrap;
+}
   .market-arrow {
     font-size: 20px;
   }
@@ -1825,5 +1859,12 @@ p {
     width: 100%;
     height: 46px;
     font-size: 13px;
+  }
+}
+
+@media (min-width: 901px) {
+  .product h2 {
+    white-space: nowrap;
+    font-size: clamp(42px, 4.2vw, 64px);
   }
 }
