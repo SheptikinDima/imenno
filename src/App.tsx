@@ -107,70 +107,6 @@ const fadeRight: Variants = {
   }
 };
 
-function PrivacyPage() {
-  return (
-    <div className="site">
-      <header className="header">
-        <a className="logo" href="/">
-          ИМЕННО
-        </a>
-
-        <nav className="nav">
-          <a href="/#about">О бренде</a>
-          <a href="/#product">О продукте</a>
-          <a href="/#kit">Состав набора</a>
-          <a href="/#buy">Где купить</a>
-        </nav>
-      </header>
-
-      <main className="privacy-page">
-        <section className="privacy-page-inner">
-          <div className="section-label">Документы</div>
-
-          <h1>Политика конфиденциальности</h1>
-
-          <p>
-            Оператор персональных данных: Индивидуальный предприниматель Ширинян
-            Давид Торгомович, ИНН 772793703895, ОГРНИП 324774600800835.
-          </p>
-
-          <p>
-            Нажимая кнопку отправки заявки на сайте, пользователь подтверждает,
-            что ознакомлен с настоящей политикой конфиденциальности и даёт
-            согласие на обработку своих персональных данных.
-          </p>
-
-          <p>
-            К персональным данным могут относиться: имя, номер телефона, адрес
-            электронной почты, а также иная информация, которую пользователь
-            самостоятельно указывает в форме заявки.
-          </p>
-
-          <p>
-            Персональные данные используются для обработки заявки, связи с
-            пользователем, уточнения деталей заказа и предоставления информации
-            о товарах бренда «ИМЕННО».
-          </p>
-
-          <p>
-            Оператор принимает необходимые меры для защиты персональных данных и
-            не передаёт их третьим лицам, за исключением случаев,
-            предусмотренных законодательством Российской Федерации.
-          </p>
-
-          <p>
-            Пользователь вправе отозвать согласие на обработку персональных
-            данных, направив обращение на электронную почту: info@imenno.store.
-          </p>
-
-          <a className="privacy-back" href="/#contact">
-            Вернуться к форме
-          </a>
-        </section>
-      </main>
-    </div>
-  );
-}
 
 function HomePage() {
   const [heroNameIndex, setHeroNameIndex] = useState(0);
@@ -574,7 +510,7 @@ function HomePage() {
             <h4>Документы</h4>
             <a href="#kit">Что входит в набор</a>
             <a href="#buy">Маркетплейсы</a>
-            <a href="/privacy">Политика конфиденциальности</a>
+            
           </div>
         </div>
 
@@ -587,12 +523,5 @@ function HomePage() {
 }
 
 export default function App() {
-  const isPrivacyPage =
-    typeof window !== "undefined" && window.location.pathname === "/privacy";
-
-  if (isPrivacyPage) {
-    return <PrivacyPage />;
-  }
-
   return <HomePage />;
 }
