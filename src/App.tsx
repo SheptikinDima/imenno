@@ -215,7 +215,14 @@ function HomePage() {
       <main>
         <section className="hero">
           <div className="hero-scene" aria-hidden="true">
-            <img className="hero-bg" src={asset("hero-bg-final.png")} alt="" />
+           <img
+  className="hero-bg"
+  src={asset("hero-bg-final.png")}
+  alt=""
+  loading="eager"
+  fetchPriority="high"
+  decoding="async"
+/>
 
             <div className="hero-name-on-bg">
               <AnimatePresence mode="wait">
@@ -294,10 +301,12 @@ function HomePage() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.35 }}
             >
-              <img
-                src={asset("insert-float-a.png")}
-                alt="Персональный вкладыш ИМЕННО"
-              />
+             <img
+  src={asset("insert-float-a.png")}
+  alt="Персональный вкладыш ИМЕННО"
+  loading="lazy"
+  decoding="async"
+/>
             </motion.div>
           </div>
         </section>
@@ -332,13 +341,14 @@ function HomePage() {
                   {bottles.map((name, index) => (
                     <figure key={`${group}-${name}`}>
                       <img
-                        src={asset(
-                          `asset-${String(index + 8).padStart(2, "0")}.png`
-                        )}
-                        alt={group === 0 ? `Флакон ${name}` : ""}
-                        loading="eager"
-                        draggable="false"
-                      />
+  src={asset(
+    `asset-${String(index + 8).padStart(2, "0")}.png`
+  )}
+  alt={group === 0 ? `Флакон ${name}` : ""}
+  loading="lazy"
+  decoding="async"
+  draggable="false"
+/>
                     </figure>
                   ))}
                 </div>
@@ -377,7 +387,12 @@ function HomePage() {
                 viewport={{ once: true, amount: 0.25 }}
                 transition={{ delay: index * 0.08 }}
               >
-                <img src={asset(item.image)} alt="" />
+              <img
+  src={asset(item.image)}
+  alt=""
+  loading="lazy"
+  decoding="async"
+/>
 
                 <div>
                   <h3>{item.title}</h3>
@@ -424,7 +439,12 @@ function HomePage() {
 
                 <p>{item.text}</p>
 
-                <img src={asset(item.image)} alt="" />
+               <img
+  src={asset(item.image)}
+  alt=""
+  loading="lazy"
+  decoding="async"
+/>
               </motion.article>
             ))}
           </div>
@@ -476,7 +496,12 @@ function HomePage() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.35 }}
             >
-              <img src={asset("new-pdf/new-pdf-05.webp")} alt="Ozon" />
+              <img
+  src={asset("new-pdf/new-pdf-05.webp")}
+  alt="Ozon"
+  loading="lazy"
+  decoding="async"
+/>
 
               <a
                 href="https://www.ozon.ru/seller/mipupu/?__rr=2&from=share"
@@ -495,7 +520,12 @@ function HomePage() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.35 }}
             >
-              <img src={asset("new-pdf/new-pdf-04.webp")} alt="Wildberries" />
+              <img
+  src={asset("new-pdf/new-pdf-04.webp")}
+  alt="Wildberries"
+  loading="lazy"
+  decoding="async"
+/>
 
               <a
                 href="https://www.wildberries.ru/seller/250120152"
