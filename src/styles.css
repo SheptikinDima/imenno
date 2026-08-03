@@ -1904,7 +1904,16 @@ p {
     font-size: clamp(42px, 4.2vw, 64px);
   }
 }
+.hero-picture {
+  display: block;
+  width: 100%;
+}
 
+.hero-picture .hero-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 /* FINAL MOBILE FIX — держать в самом конце файла */
 
 @media (max-width: 760px) {
@@ -1912,7 +1921,19 @@ p {
   .site {
     background: #fff8fa;
   }
+@media (max-width: 760px) {
+  .hero-picture {
+    display: block;
+    width: 100%;
+  }
 
+  .hero-picture .hero-bg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: none;
+  }
+}
   .hero {
     position: relative;
     width: 100%;

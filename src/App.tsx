@@ -151,14 +151,21 @@ function HomePage() {
       <main>
         <section className="hero">
           <div className="hero-scene" aria-hidden="true">
-           <img
-  className="hero-bg"
-  src={asset("hero-bg-final.webp")}
-  alt=""
-  loading="eager"
-  fetchPriority="high"
-  decoding="async"
-/>
+     <picture className="hero-picture">
+  <source
+    media="(max-width: 760px)"
+    srcSet={asset("hero-bg-mobile.webp")}
+  />
+
+  <img
+    className="hero-bg"
+    src={asset("hero-bg-final.webp")}
+    alt=""
+    loading="eager"
+    fetchPriority="high"
+    decoding="async"
+  />
+</picture>
 
             <div className="hero-name-on-bg">
               <AnimatePresence mode="wait">
