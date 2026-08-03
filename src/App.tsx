@@ -281,7 +281,7 @@ function HomePage() {
     `asset-${String(index + 8).padStart(2, "0")}.png`
   )}
   alt={group === 0 ? `Флакон ${name}` : ""}
-  loading="lazy"
+  loading="eager"
   decoding="async"
   draggable="false"
 />

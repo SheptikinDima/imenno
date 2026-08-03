@@ -1904,3 +1904,145 @@ p {
     font-size: clamp(42px, 4.2vw, 64px);
   }
 }
+
+/* FINAL MOBILE FIX — держать в самом конце файла */
+
+@media (max-width: 760px) {
+  body,
+  .site {
+    background: #fff8fa;
+  }
+
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 620px;
+    min-height: 620px;
+    padding: 86px 16px 0;
+    display: block;
+    overflow: hidden;
+    background: #fff8fa;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    max-width: 330px;
+    padding: 0;
+  }
+
+  .hero-content h1 {
+    margin: 0 0 16px;
+    font-size: 42px;
+    line-height: 0.94;
+  }
+
+  .hero-content p {
+    max-width: 300px;
+    margin: 0 0 20px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .hero-button {
+    min-width: 150px;
+    height: 46px;
+    padding: 0 26px;
+    font-size: 14px;
+  }
+
+  .hero-scene {
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 215px;
+    bottom: auto;
+    width: 720px;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    transform: translateX(-57%);
+    pointer-events: none;
+
+    --name-left: 72.6%;
+    --name-top: 56.5%;
+    --name-rotate: -5deg;
+  }
+
+  .hero-bg {
+    position: static;
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    transform: none;
+    object-fit: initial;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 248, 250, 0.88) 0%,
+      rgba(255, 248, 250, 0.72) 27%,
+      rgba(255, 248, 250, 0.1) 47%,
+      rgba(255, 248, 250, 0) 63%
+    );
+  }
+
+  .hero-name-on-bg {
+    width: 105px;
+    height: 30px;
+  }
+
+  .hero-name {
+    font-size: 19px;
+  }
+
+  .about {
+    margin: 0;
+    padding: 28px 0 48px;
+    background: #fff8fa;
+    border: 0;
+  }
+}
+
+/* FINAL TABLET FIX */
+
+/* FINAL TABLET FIX */
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .hero {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 560px;
+    padding: 80px 32px 0;
+    overflow: hidden;
+  }
+
+  .hero-scene {
+    left: 50%;
+    top: -20px;
+    bottom: auto;
+    width: 1100px;
+    height: auto;
+    transform: translateX(-50%);
+  }
+
+  .hero-bg {
+    width: 100%;
+    height: auto;
+    max-width: none;
+  }
+
+  .about {
+    margin-top: 0;
+    padding-top: 42px;
+  }
+}
