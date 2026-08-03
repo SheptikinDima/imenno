@@ -255,16 +255,16 @@ p {
   position: absolute;
   z-index: 1;
   left: 50%;
-  top: 0;
+  top: -105px;
   bottom: auto;
   width: 100vw;
   height: auto;
   transform: translateX(-50%);
   pointer-events: none;
 
-  --name-left: 68.7%;
-  --name-top: 52.8%;
-  --name-rotate: -7deg;
+  --name-left: 72.6%;
+--name-top: 56.5%;
+--name-rotate: -5deg;
 }
 
 .hero-bg {
@@ -1197,8 +1197,8 @@ p {
     bottom: auto;
     transform: translateX(-50%);
 
-    --name-left: 69%;
-    --name-top: 52.8%;
+  --name-left: 72.6%;
+--name-top: 56.5%;
   }
 
   .hero-content {
@@ -1383,9 +1383,9 @@ p {
     transform: translateX(-50%);
     animation: none;
 
-    --name-left: 68.7%;
-    --name-top: 52.8%;
-    --name-rotate: -7deg;
+  --name-left: 72.6%;
+--name-top: 56.5%;
+--name-rotate: -5deg;
   }
 
   .hero-bg {

@@ -5,14 +5,15 @@ import { AnimatePresence, motion, type Variants } from "framer-motion";
 const asset = (name: string) => `/assets/${name}`;
 
 const heroNames = [
-  "Алина",
-  "Катя",
-  "София",
+  "Анна",
   "Мария",
-  "Алиса",
-  "Полина",
-  "Вика",
-  "Дарья"
+  "Елена",
+  "Наталья",
+  "Ольга",
+  "Юлия",
+  "Дарья",
+  "София",
+  "Ирина"
 ];
 
 const bottles = [
