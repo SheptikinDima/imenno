@@ -217,7 +217,7 @@ function HomePage() {
           <div className="hero-scene" aria-hidden="true">
            <img
   className="hero-bg"
-  src={asset("hero-bg-final.png")}
+  src={asset("hero-bg-final.webp")}
   alt=""
   loading="eager"
   fetchPriority="high"
