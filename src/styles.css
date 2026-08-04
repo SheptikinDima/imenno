@@ -1964,3 +1964,57 @@ min-height: 0;
 .bottles-group[aria-hidden="true"] {
   display: none;
 }
+/* DESKTOP BOTTLES CAROUSEL */
+
+@media (min-width: 761px) {
+  .bottles-marquee {
+    overflow: hidden;
+  }
+
+  .bottles-track {
+    display: flex;
+    width: max-content;
+    animation: bottlesMove 34s linear infinite;
+    transform: none;
+    will-change: transform;
+  }
+
+  .bottles-group[aria-hidden="true"] {
+    display: flex;
+  }
+}
+
+/* MOBILE BOTTLES — обычная прокрутка без тяжёлой анимации */
+
+@media (max-width: 760px) {
+  .bottles-marquee {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .bottles-marquee::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bottles-track {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
+
+  .bottles-group[aria-hidden="true"] {
+    display: none;
+  }
+}
+.bottles-track {
+  opacity: 0;
+  animation-play-state: paused;
+  transition: opacity 0.2s ease;
+}
+
+.bottles-marquee.is-ready .bottles-track {
+  opacity: 1;
+  animation-play-state: running;
+}

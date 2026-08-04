@@ -26,25 +26,28 @@ const bottles = [
   "Дарья",
   "Анастасия"
 ];
+const bottleImages = bottles.map((_, index) =>
+  asset(`asset-${String(index + 8).padStart(2, "0")}.webp`)
+);
 
 const ingredients = [
   {
-    image: "ingredient-cream.png",
+    image: "ingredient-cream.webp",
     title: "Ресвератрол",
     text: "Антиоксидантный компонент, который помогает поддерживать защиту кожи от воздействия внешней среды."
   },
   {
-    image: "ingredient-gel.png",
+    image: "ingredient-gel.webp",
     title: "Масло сладкого миндаля и аллантоин",
     text: "Помогают смягчать кожу и сохранять чувство комфорта после нанесения."
   },
   {
-    image: "ingredient-hands.png",
+    image: "ingredient-hands.webp",
     title: "Ниацинамид и витамин Е",
     text: "Компоненты для ухода за кожей, ощущения мягкости и визуальной ухоженности."
   },
   {
-    image: "ingredient-vanilla.png",
+    image: "ingredient-vanilla.webp",
     title: "Нишевая парфюмерная композиция",
     text: "Специально разработана для этой коллекции и делает ежедневный уход ещё более приятным."
   }
@@ -111,7 +114,7 @@ const fadeRight: Variants = {
 function HomePage() {
   const [heroNameIndex, setHeroNameIndex] = useState(0);
   const [kitActiveIndex, setKitActiveIndex] = useState(0);
-
+const [bottlesReady, setBottlesReady] = useState(false);
   const handleKitScroll = (event: UIEvent<HTMLDivElement>) => {
     const slider = event.currentTarget;
     const card = slider.querySelector<HTMLElement>(".kit-card");
@@ -124,7 +127,39 @@ function HomePage() {
 
     setKitActiveIndex(Math.max(0, Math.min(index, kit.length - 1)));
   };
+useEffect(() => {
+  let cancelled = false;
 
+  const preloadImages = bottleImages.map(
+    (src) =>
+      new Promise<void>((resolve) => {
+        const image = new Image();
+
+        image.onload = async () => {
+          try {
+            await image.decode();
+          } catch {
+            // Изображение уже загружено, даже если decode() не поддержался.
+          }
+
+          resolve();
+        };
+
+        image.onerror = () => resolve();
+        image.src = src;
+      })
+  );
+
+  Promise.all(preloadImages).then(() => {
+    if (!cancelled) {
+      setBottlesReady(true);
+    }
+  });
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
   useEffect(() => {
     const interval = window.setInterval(() => {
       setHeroNameIndex((prev) => (prev + 1) % heroNames.length);
@@ -273,7 +308,10 @@ exit={{ opacity: 0, y: -8 }}
             </p>
           </motion.div>
 
-          <div className="bottles-marquee" aria-label="Примеры именных флаконов">
+         <div
+  className={`bottles-marquee ${bottlesReady ? "is-ready" : ""}`}
+  aria-label="Примеры именных флаконов"
+>
             <div className="bottles-track">
               {[0, 1].map((group) => (
                 <div
@@ -285,7 +323,7 @@ exit={{ opacity: 0, y: -8 }}
                     <figure key={`${group}-${name}`}>
                       <img
   src={asset(
-    `asset-${String(index + 8).padStart(2, "0")}.png`
+    `asset-${String(index + 8).padStart(2, "0")}.webp`
   )}
   alt={group === 0 ? `Флакон ${name}` : ""}
   loading="eager"
