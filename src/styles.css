@@ -242,8 +242,8 @@ p {
 .hero {
   position: relative;
   width: 100%;
-  min-height: 100vh;
-  min-height: 100svh;
+  height: clamp(520px, calc(56.25vw - 105px), 900px);
+min-height: 0;
   overflow: hidden;
   display: flex;
   align-items: flex-start;
@@ -1187,7 +1187,7 @@ p {
  .hero {
   position: relative;
   width: 100%;
-  height: clamp(600px, 60vw, 640px);
+  height: 600px;
   min-height: 0;
   padding: 80px 32px 0;
   overflow: hidden;
@@ -1934,4 +1934,33 @@ p {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* MOBILE PERFORMANCE */
+
+.header {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.bottles-marquee {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.bottles-marquee::-webkit-scrollbar {
+  display: none;
+}
+
+.bottles-track {
+  animation: none;
+  transform: none;
+  will-change: auto;
+}
+
+/* Второй комплект нужен только для бесконечной анимации */
+.bottles-group[aria-hidden="true"] {
+  display: none;
 }
