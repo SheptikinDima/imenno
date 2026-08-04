@@ -247,7 +247,7 @@ function HomePage() {
              <img
   src={asset("insert-float-a.png")}
   alt="Персональный вкладыш ИМЕННО"
-  loading="lazy"
+  loading="eager"
   decoding="async"
 />
             </motion.div>
@@ -333,7 +333,7 @@ function HomePage() {
               <img
   src={asset(item.image)}
   alt=""
-  loading="lazy"
+  loading="eager"
   decoding="async"
 />
 
@@ -385,7 +385,7 @@ function HomePage() {
                <img
   src={asset(item.image)}
   alt=""
-  loading="lazy"
+   loading="eager"
   decoding="async"
 />
               </motion.article>
@@ -442,7 +442,7 @@ function HomePage() {
               <img
   src={asset("new-pdf/new-pdf-05.webp")}
   alt="Ozon"
-  loading="lazy"
+  loading="eager"
   decoding="async"
 />
 
@@ -466,7 +466,7 @@ function HomePage() {
               <img
   src={asset("new-pdf/new-pdf-04.webp")}
   alt="Wildberries"
-  loading="lazy"
+  loading="eager"
   decoding="async"
 />
 
