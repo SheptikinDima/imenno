@@ -1,4 +1,4 @@
-import { useEffect, useState, type UIEvent } from "react";
+import { useEffect, useRef, useState, type UIEvent } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 
 
@@ -114,7 +114,23 @@ const fadeRight: Variants = {
 function HomePage() {
   const [heroNameIndex, setHeroNameIndex] = useState(0);
   const [kitActiveIndex, setKitActiveIndex] = useState(0);
-const [bottlesReady, setBottlesReady] = useState(false);
+  const [bottlesInView, setBottlesInView] = useState(false);
+  const [bottlesReady, setBottlesReady] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
+  const bottlesRef = useRef<HTMLDivElement | null>(null);
+  const loadedBottleIndexes = useRef<Set<number>>(new Set());
+  const markBottleLoaded = (index: number) => {
+    const loaded = loadedBottleIndexes.current;
+
+    if (loaded.has(index)) return;
+
+    loaded.add(index);
+
+    if (loaded.size >= bottleImages.length) {
+      setBottlesReady(true);
+    }
+  };
+
   const handleKitScroll = (event: UIEvent<HTMLDivElement>) => {
     const slider = event.currentTarget;
     const card = slider.querySelector<HTMLElement>(".kit-card");
@@ -127,39 +143,44 @@ const [bottlesReady, setBottlesReady] = useState(false);
 
     setKitActiveIndex(Math.max(0, Math.min(index, kit.length - 1)));
   };
-useEffect(() => {
-  let cancelled = false;
+  useEffect(() => {
+    const node = bottlesRef.current;
 
-  const preloadImages = bottleImages.map(
-    (src) =>
-      new Promise<void>((resolve) => {
-        const image = new Image();
+    if (!node) return;
 
-        image.onload = async () => {
-          try {
-            await image.decode();
-          } catch {
-            // Изображение уже загружено, даже если decode() не поддержался.
-          }
-
-          resolve();
-        };
-
-        image.onerror = () => resolve();
-        image.src = src;
-      })
-  );
-
-  Promise.all(preloadImages).then(() => {
-    if (!cancelled) {
-      setBottlesReady(true);
+    if (!("IntersectionObserver" in window)) {
+      setBottlesInView(true);
+      return;
     }
-  });
 
-  return () => {
-    cancelled = true;
-  };
-}, []);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setBottlesInView(entry.isIntersecting);
+      },
+      {
+        rootMargin: "0px 0px",
+        threshold: 0.01
+      }
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const updatePageVisibility = () => {
+      setPageVisible(document.visibilityState === "visible");
+    };
+
+    updatePageVisibility();
+    document.addEventListener("visibilitychange", updatePageVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", updatePageVisibility);
+    };
+  }, []);
+
   useEffect(() => {
     const interval = window.setInterval(() => {
       setHeroNameIndex((prev) => (prev + 1) % heroNames.length);
@@ -208,8 +229,8 @@ useEffect(() => {
                   key={heroNames[heroNameIndex]}
                   className="hero-name"
                   initial={{ opacity: 0, y: 8 }}
-animate={{ opacity: 1, y: 0 }}
-exit={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.45, ease: "easeOut" }}
                 >
                   {heroNames[heroNameIndex]}
@@ -282,7 +303,7 @@ exit={{ opacity: 0, y: -8 }}
              <img
   src={asset("insert-float-a.png")}
   alt="Персональный вкладыш ИМЕННО"
-  loading="eager"
+  loading="lazy"
   decoding="async"
 />
             </motion.div>
@@ -309,9 +330,12 @@ exit={{ opacity: 0, y: -8 }}
           </motion.div>
 
          <div
-  className={`bottles-marquee ${bottlesReady ? "is-ready" : ""}`}
-  aria-label="Примеры именных флаконов"
->
+            ref={bottlesRef}
+            className={`bottles-marquee ${
+              bottlesInView && pageVisible ? "is-in-view" : ""
+            } ${bottlesReady ? "is-ready" : ""}`}
+            aria-label="Примеры именных флаконов"
+          >
             <div className="bottles-track">
               {[0, 1].map((group) => (
                 <div
@@ -322,14 +346,15 @@ exit={{ opacity: 0, y: -8 }}
                   {bottles.map((name, index) => (
                     <figure key={`${group}-${name}`}>
                       <img
-  src={asset(
-    `asset-${String(index + 8).padStart(2, "0")}.webp`
-  )}
-  alt={group === 0 ? `Флакон ${name}` : ""}
-  loading="eager"
-  decoding="async"
-  draggable="false"
-/>
+                        src={bottleImages[index]}
+                        alt={group === 0 ? `Флакон ${name}` : ""}
+                        loading={group === 0 ? "eager" : "lazy"}
+                        fetchPriority={group === 0 ? "low" : "auto"}
+                        decoding="async"
+                        onLoad={() => markBottleLoaded(index)}
+                        onError={() => markBottleLoaded(index)}
+                        draggable="false"
+                      />
                     </figure>
                   ))}
                 </div>
@@ -371,7 +396,7 @@ exit={{ opacity: 0, y: -8 }}
               <img
   src={asset(item.image)}
   alt=""
-  loading="eager"
+  loading="lazy"
   decoding="async"
 />
 
@@ -423,7 +448,7 @@ exit={{ opacity: 0, y: -8 }}
                <img
   src={asset(item.image)}
   alt=""
-   loading="eager"
+   loading="lazy"
   decoding="async"
 />
               </motion.article>
@@ -480,7 +505,7 @@ exit={{ opacity: 0, y: -8 }}
               <img
   src={asset("new-pdf/new-pdf-05.webp")}
   alt="Ozon"
-  loading="eager"
+  loading="lazy"
   decoding="async"
 />
 
@@ -504,7 +529,7 @@ exit={{ opacity: 0, y: -8 }}
               <img
   src={asset("new-pdf/new-pdf-04.webp")}
   alt="Wildberries"
-  loading="eager"
+  loading="lazy"
   decoding="async"
 />
 

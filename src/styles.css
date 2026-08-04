@@ -478,8 +478,33 @@ min-height: 0;
 .bottles-track {
   display: flex;
   width: max-content;
+  opacity: 0;
+  visibility: hidden;
   animation: bottlesMove 34s linear infinite;
+  animation-play-state: paused;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+  transition: opacity 0.18s ease;
+}
+
+.bottles-marquee.is-ready .bottles-track {
+  opacity: 1;
+  visibility: visible;
+}
+
+.bottles-marquee.is-ready.is-in-view .bottles-track {
+  animation-play-state: running;
   will-change: transform;
+}
+
+@keyframes bottlesMove {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 .bottles-group {
@@ -504,15 +529,6 @@ min-height: 0;
   pointer-events: none;
 }
 
-@keyframes bottlesMove {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-50%);
-  }
-}
 
 /* PRODUCT */
 
@@ -1582,9 +1598,6 @@ min-height: 0;
     width: 12px;
   }
 
-  .bottles-track {
-    animation-duration: 26s;
-  }
 
   .bottles-group {
     gap: 1px;
@@ -1936,57 +1949,15 @@ min-height: 0;
   height: auto;
 }
 
-/* MOBILE PERFORMANCE */
 
-.header {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
+/* На планшетах и телефонах убираем тяжёлую автоматическую анимацию */
 
-.bottles-marquee {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.bottles-marquee::-webkit-scrollbar {
-  display: none;
-}
-
-.bottles-track {
-  animation: none;
-  transform: none;
-  will-change: auto;
-}
-
-/* Второй комплект нужен только для бесконечной анимации */
-.bottles-group[aria-hidden="true"] {
-  display: none;
-}
-/* DESKTOP BOTTLES CAROUSEL */
-
-@media (min-width: 761px) {
-  .bottles-marquee {
-    overflow: hidden;
+@media (max-width: 1100px) {
+  .header {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
-  .bottles-track {
-    display: flex;
-    width: max-content;
-    animation: bottlesMove 34s linear infinite;
-    transform: none;
-    will-change: transform;
-  }
-
-  .bottles-group[aria-hidden="true"] {
-    display: flex;
-  }
-}
-
-/* MOBILE BOTTLES — обычная прокрутка без тяжёлой анимации */
-
-@media (max-width: 760px) {
   .bottles-marquee {
     overflow-x: auto;
     overflow-y: hidden;
@@ -1998,7 +1969,8 @@ min-height: 0;
     display: none;
   }
 
-  .bottles-track {
+  .bottles-track,
+  .bottles-marquee.is-in-view .bottles-track {
     animation: none;
     transform: none;
     will-change: auto;
@@ -2007,14 +1979,4 @@ min-height: 0;
   .bottles-group[aria-hidden="true"] {
     display: none;
   }
-}
-.bottles-track {
-  opacity: 0;
-  animation-play-state: paused;
-  transition: opacity 0.2s ease;
-}
-
-.bottles-marquee.is-ready .bottles-track {
-  opacity: 1;
-  animation-play-state: running;
 }
