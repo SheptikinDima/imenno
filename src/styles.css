@@ -685,6 +685,7 @@ min-height: 0;
   box-shadow: 0 18px 48px rgba(86, 48, 61, 0.05);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .kit-card span {
@@ -722,23 +723,23 @@ min-height: 0;
 }
 
 .kit-card:nth-child(1) img {
-  height: 205px; /* флакон */
-  transform: none;
+  height: 205px;
+  transform: translateY(0);
 }
 
 .kit-card:nth-child(2) img {
-  height: 255px; /* коробка должна быть выше флакона */
-  transform: none;
+  height: 255px;
+  transform: translateY(32px);
 }
 
 .kit-card:nth-child(3) img {
-  height: 225px; /* открытка и послание */
-  transform: none;
+  height: 225px;
+  transform: translateY(13px);
 }
 
 .kit-card:nth-child(4) img {
-  height: 220px; /* стикерпак */
-  transform: none;
+  height: 220px;
+  transform: translateY(9px);
 }
 
 .kit-card img {
@@ -1717,22 +1718,22 @@ min-height: 0;
 
   .kit-card:nth-child(1) img {
     height: 200px;
-    transform: none;
+    transform: translateY(0);
   }
 
   .kit-card:nth-child(2) img {
     height: 245px;
-    transform: none;
+    transform: translateY(26px);
   }
 
   .kit-card:nth-child(3) img {
     height: 220px;
-    transform: none;
+    transform: translateY(10px);
   }
 
   .kit-card:nth-child(4) img {
     height: 215px;
-    transform: none;
+    transform: translateY(7px);
   }
 
   .kit-dots {
