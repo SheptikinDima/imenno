@@ -58,25 +58,25 @@ const kit = [
     number: "01",
     title: "Основа подарка",
     text: "Нишевый аромат и премиальная формула для ежедневного комфорта.",
-    image: "product-anastasia.jpg"
+    image: "product-anastasia.webp"
   },
   {
     number: "02",
     title: "Первое впечатление",
     text: "Красивое оформление, созданное для подарка.",
-    image: "box-front.jpg"
+    image: "box-front.webp"
   },
   {
     number: "03",
     title: "Личное послание",
     text: "Имя и тёплые слова, которые остаются на память.",
-    image: "insert-float-b.png"
+    image: "insert-float-b.webp"
   },
   {
     number: "04",
     title: "Стикерпак внутри",
     text: "Завершающие штрихи, создающие настроение.",
-    image: "stickerpack.png"
+    image: "stickerpack.webp"
   }
 ];
 
@@ -301,7 +301,7 @@ function HomePage() {
               viewport={{ once: true, amount: 0.35 }}
             >
              <img
-  src={asset("insert-float-a.png")}
+  src={asset("insert-float-a.webp")}
   alt="Персональный вкладыш ИМЕННО"
   loading="lazy"
   decoding="async"
