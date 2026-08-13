@@ -510,7 +510,7 @@ function HomePage() {
 />
 
               <a
-                href="https://www.ozon.ru/seller/mipupu/?__rr=2&from=share"
+                href=" https://www.ozon.ru/seller/imenno-store/"
                 target="_blank"
                 rel="noreferrer"
               >
