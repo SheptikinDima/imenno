@@ -2,7 +2,10 @@ import { useEffect, useRef, useState, type UIEvent } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 
 
-const asset = (name: string) => `/assets/${name}`;
+const ASSET_VERSION = "20260824-1";
+
+const asset = (name: string) =>
+  `/assets/${name}?v=${ASSET_VERSION}`;
 
 const heroNames = [
   "Анна",
