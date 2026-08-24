@@ -3,13 +3,7 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-
-  base: "/",
-
-  build: {
-    target: ["es2019", "safari14"]
-  },
-
+  base: "./",
   server: {
     port: 5173,
     host: "127.0.0.1"
