@@ -1,43 +1,53 @@
-const ASSET_VERSION = "20260830-1";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type UIEvent
+} from "react";
+
+import {
+  AnimatePresence,
+  motion,
+  type Variants
+} from "framer-motion";
+
+
+const ASSET_VERSION = "20260824-1";
 
 const asset = (name: string) =>
   `/assets/${name}?v=${ASSET_VERSION}`;
 
 
-const bottles = [
-  {
-    name: "Ольга",
-    image: "asset-08.webp"
-  },
-  {
-    name: "Алёна",
-    image: "asset-09.webp"
-  },
-  {
-    name: "Александра",
-    image: "asset-10.webp"
-  },
-  {
-    name: "Алиса",
-    image: "asset-11.webp"
-  },
-  {
-    name: "Анна",
-    image: "asset-12.webp"
-  },
-  {
-    name: "Алина",
-    image: "asset-13.webp"
-  },
-  {
-    name: "Дарья",
-    image: "asset-14.webp"
-  },
-  {
-    name: "Анастасия",
-    image: "asset-15.webp"
-  }
+const heroNames = [
+  "Анна",
+  "Мария",
+  "Елена",
+  "Наталья",
+  "Ольга",
+  "Юлия",
+  "Дарья",
+  "София",
+  "Ирина"
 ];
+
+
+const bottles = [
+  "Ольга",
+  "Алёна",
+  "Александра",
+  "Алиса",
+  "Анна",
+  "Алина",
+  "Дарья",
+  "Анастасия"
+];
+
+
+const bottleImages = bottles.map((_, index) =>
+  asset(
+    `asset-${String(index + 8).padStart(2, "0")}.webp`
+  )
+);
 
 
 const ingredients = [
@@ -100,25 +110,314 @@ const kit = [
 ];
 
 
+const fadeUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 34
+  },
+
+  visible: {
+    opacity: 1,
+    y: 0,
+
+    transition: {
+      duration: 0.8,
+      ease: "easeOut"
+    }
+  }
+};
+
+
+const fadeRight: Variants = {
+  hidden: {
+    opacity: 0,
+    x: 42
+  },
+
+  visible: {
+    opacity: 1,
+    x: 0,
+
+    transition: {
+      duration: 0.9,
+      ease: "easeOut"
+    }
+  }
+};
+
+
 function HomePage() {
+  const [heroNameIndex, setHeroNameIndex] =
+    useState(0);
+
+  const [kitActiveIndex, setKitActiveIndex] =
+    useState(0);
+
+  const [bottlesInView, setBottlesInView] =
+    useState(false);
+
+  const [bottlesReady, setBottlesReady] =
+    useState(false);
+
+  const [pageVisible, setPageVisible] =
+    useState(true);
+
+  const [isMobile, setIsMobile] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window
+        .matchMedia("(max-width: 1100px)")
+        .matches
+  );
+
+
+  const bottlesRef =
+    useRef<HTMLDivElement | null>(null);
+
+  const loadedBottleIndexes =
+    useRef<Set<number>>(new Set());
+
+
+  const markBottleLoaded = (
+    index: number
+  ) => {
+    const loaded =
+      loadedBottleIndexes.current;
+
+    if (loaded.has(index)) {
+      return;
+    }
+
+    loaded.add(index);
+
+    if (
+      loaded.size >=
+      bottleImages.length
+    ) {
+      setBottlesReady(true);
+    }
+  };
+
+
+  const handleKitScroll = (
+    event: UIEvent<HTMLDivElement>
+  ) => {
+    const slider =
+      event.currentTarget;
+
+    const card =
+      slider.querySelector<HTMLElement>(
+        ".kit-card"
+      );
+
+    if (!card) {
+      return;
+    }
+
+    const gap = parseFloat(
+      getComputedStyle(slider).gap ||
+        "0"
+    );
+
+    const step =
+      card.offsetWidth + gap;
+
+    const index =
+      Math.round(
+        slider.scrollLeft / step
+      );
+
+    setKitActiveIndex(
+      Math.max(
+        0,
+        Math.min(
+          index,
+          kit.length - 1
+        )
+      )
+    );
+  };
+
+
+  /*
+   * Определяем mobile/tablet.
+   */
+  useEffect(() => {
+    const media =
+      window.matchMedia(
+        "(max-width: 1100px)"
+      );
+
+    const update = () => {
+      setIsMobile(media.matches);
+    };
+
+    update();
+
+    if (media.addEventListener) {
+      media.addEventListener(
+        "change",
+        update
+      );
+
+      return () => {
+        media.removeEventListener(
+          "change",
+          update
+        );
+      };
+    }
+
+    media.addListener(update);
+
+    return () => {
+      media.removeListener(update);
+    };
+  }, []);
+
+
+  /*
+   * Следим, видна ли карусель.
+   */
+  useEffect(() => {
+    const node =
+      bottlesRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    if (
+      !(
+        "IntersectionObserver" in
+        window
+      )
+    ) {
+      setBottlesInView(true);
+      return;
+    }
+
+    const observer =
+      new IntersectionObserver(
+        ([entry]) => {
+          setBottlesInView(
+            entry.isIntersecting
+          );
+        },
+        {
+          rootMargin: "0px",
+          threshold: 0.01
+        }
+      );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+
+  /*
+   * Не запускаем лишнее,
+   * когда вкладка скрыта.
+   */
+  useEffect(() => {
+    const updatePageVisibility =
+      () => {
+        setPageVisible(
+          document.visibilityState ===
+            "visible"
+        );
+      };
+
+    updatePageVisibility();
+
+    document.addEventListener(
+      "visibilitychange",
+      updatePageVisibility
+    );
+
+    return () => {
+      document.removeEventListener(
+        "visibilitychange",
+        updatePageVisibility
+      );
+    };
+  }, []);
+
+
+  /*
+   * Смена имени в Hero.
+   * На мобильном оставляем
+   * статичное имя.
+   */
+  useEffect(() => {
+    if (
+      isMobile ||
+      !pageVisible
+    ) {
+      return;
+    }
+
+    const interval =
+      window.setInterval(() => {
+        setHeroNameIndex(
+          (prev) =>
+            (prev + 1) %
+            heroNames.length
+        );
+      }, 2300);
+
+    return () => {
+      window.clearInterval(
+        interval
+      );
+    };
+  }, [isMobile, pageVisible]);
+
+
   return (
-    <div className="site" id="top">
+    <div
+      className="site"
+      id="top"
+    >
 
       <header className="header">
-        <a className="logo" href="#top">
+
+        <a
+          className="logo"
+          href="#top"
+        >
           ИМЕННО
         </a>
 
+
         <nav className="nav">
-          <a href="#about">О бренде</a>
-          <a href="#product">О продукте</a>
-          <a href="#kit">Состав набора</a>
-          <a href="#buy">Где купить</a>
+
+          <a href="#about">
+            О бренде
+          </a>
+
+          <a href="#product">
+            О продукте
+          </a>
+
+          <a href="#kit">
+            Состав набора
+          </a>
+
+          <a href="#buy">
+            Где купить
+          </a>
+
         </nav>
+
       </header>
 
 
       <main>
+
 
         {/* HERO */}
 
@@ -128,6 +427,7 @@ function HomePage() {
             className="hero-scene"
             aria-hidden="true"
           >
+
             <picture className="hero-picture">
 
               <source
@@ -144,46 +444,174 @@ function HomePage() {
                 )}
                 alt=""
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
 
             </picture>
 
 
             <div className="hero-name-on-bg">
-              <span className="hero-name">
-                Анна
-              </span>
+
+              {isMobile ? (
+
+                <span className="hero-name">
+                  {
+                    heroNames[
+                      heroNameIndex
+                    ]
+                  }
+                </span>
+
+              ) : (
+
+                <AnimatePresence mode="wait">
+
+                  <motion.span
+                    key={
+                      heroNames[
+                        heroNameIndex
+                      ]
+                    }
+                    className="hero-name"
+                    initial={{
+                      opacity: 0,
+                      y: 8
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0
+                    }}
+                    exit={{
+                      opacity: 0,
+                      y: -8
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      ease: "easeOut"
+                    }}
+                  >
+                    {
+                      heroNames[
+                        heroNameIndex
+                      ]
+                    }
+                  </motion.span>
+
+                </AnimatePresence>
+
+              )}
+
             </div>
 
           </div>
 
 
-          <div className="hero-content">
+          <motion.div
+            className="hero-content"
+            initial={
+              isMobile
+                ? false
+                : {
+                    opacity: 0,
+                    y: 28
+                  }
+            }
+            animate={{
+              opacity: 1,
+              y: 0
+            }}
+            transition={{
+              duration: 0.85,
+              ease: "easeOut"
+            }}
+          >
 
-            <h1>
-              <span>Это именно</span>
+            <motion.h1
+              initial={
+                isMobile
+                  ? false
+                  : {
+                      opacity: 0,
+                      y: 22
+                    }
+              }
+              animate={{
+                opacity: 1,
+                y: 0
+              }}
+              transition={{
+                duration: 0.8,
+                ease: "easeOut"
+              }}
+            >
+
+              <span>
+                Это именно
+              </span>
 
               <span className="hero-accent">
                 про тебя
               </span>
-            </h1>
+
+            </motion.h1>
 
 
-            <p>
+            <motion.p
+              initial={
+                isMobile
+                  ? false
+                  : {
+                      opacity: 0,
+                      y: 18
+                    }
+              }
+              animate={{
+                opacity: 1,
+                y: 0
+              }}
+              transition={{
+                duration: 0.75,
+                delay: isMobile
+                  ? 0
+                  : 0.18,
+                ease: "easeOut"
+              }}
+            >
               Премиальный крем для рук
-              с нишевым ароматом и именем,
-              которое имеет значение.
-            </p>
+              с нишевым ароматом и
+              именем, которое имеет
+              значение.
+            </motion.p>
 
 
-            <a
+            <motion.a
               className="hero-button"
               href="#buy"
+              initial={
+                isMobile
+                  ? false
+                  : {
+                      opacity: 0,
+                      y: 16
+                    }
+              }
+              animate={{
+                opacity: 1,
+                y: 0
+              }}
+              transition={{
+                duration: 0.65,
+                delay: isMobile
+                  ? 0
+                  : 0.42,
+                ease: "easeOut"
+              }}
             >
               Где купить
-            </a>
+            </motion.a>
 
-          </div>
+          </motion.div>
 
         </section>
 
@@ -197,7 +625,20 @@ function HomePage() {
 
           <div className="about-inner">
 
-            <div className="about-copy">
+            <motion.div
+              className="about-copy"
+              variants={fadeUp}
+              initial={
+                isMobile
+                  ? false
+                  : "hidden"
+              }
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.35
+              }}
+            >
 
               <div className="section-label">
                 Почему ИМЕННО
@@ -213,14 +654,28 @@ function HomePage() {
               </p>
 
               <p>
-                Мы верим, что самые тёплые
-                подарки начинаются с деталей.
+                Мы верим, что самые
+                тёплые подарки начинаются
+                с деталей.
               </p>
 
-            </div>
+            </motion.div>
 
 
-            <div className="about-image">
+            <motion.div
+              className="about-image"
+              variants={fadeRight}
+              initial={
+                isMobile
+                  ? false
+                  : "hidden"
+              }
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.35
+              }}
+            >
 
               <img
                 src={asset(
@@ -228,9 +683,10 @@ function HomePage() {
                 )}
                 alt="Персональный вкладыш ИМЕННО"
                 loading="lazy"
+                decoding="async"
               />
 
-            </div>
+            </motion.div>
 
           </div>
 
@@ -244,7 +700,19 @@ function HomePage() {
           id="personalization"
         >
 
-          <div>
+          <motion.div
+            variants={fadeUp}
+            initial={
+              isMobile
+                ? false
+                : "hidden"
+            }
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.35
+            }}
+          >
 
             <div className="section-label">
               Именно для неё
@@ -255,50 +723,94 @@ function HomePage() {
             </h2>
 
             <p className="lead">
-              Мы верим, что всё начинается
-              с имени.
+              Мы верим, что всё
+              начинается с имени.
             </p>
 
             <p className="lead">
-              Потому что самые тёплые подарки
-              выбирают с мыслью о том, кому
-              они предназначены.
+              Потому что самые тёплые
+              подарки выбирают с мыслью
+              о том, кому они
+              предназначены.
             </p>
 
-          </div>
+          </motion.div>
 
 
           <div
-            className="bottles-marquee is-ready"
+            ref={bottlesRef}
+            className={
+              `bottles-marquee ${
+                bottlesInView &&
+                pageVisible
+                  ? "is-in-view"
+                  : ""
+              } ${
+                bottlesReady
+                  ? "is-ready"
+                  : ""
+              }`
+            }
             aria-label="Примеры именных флаконов"
           >
 
             <div className="bottles-track">
 
-              <div className="bottles-group">
+              {(isMobile
+                ? [0]
+                : [0, 1]
+              ).map((group) => (
 
-                {bottles.map(
-                  (bottle) => (
+                <div
+                  className="bottles-group"
+                  key={group}
+                  aria-hidden={
+                    group > 0
+                  }
+                >
 
-                    <figure
-                      key={bottle.name}
-                    >
+                  {bottles.map(
+                    (name, index) => (
 
-                      <img
-                        src={asset(
-                          bottle.image
-                        )}
-                        alt={`Флакон ${bottle.name}`}
-                        loading="lazy"
-                        draggable={false}
-                      />
+                      <figure
+                        key={`${group}-${name}`}
+                      >
 
-                    </figure>
+                        <img
+                          src={
+                            bottleImages[
+                              index
+                            ]
+                          }
+                          alt={
+                            group === 0
+                              ? `Флакон ${name}`
+                              : ""
+                          }
+                          loading="lazy"
+                          fetchPriority="low"
+                          decoding="async"
+                          onLoad={() =>
+                            markBottleLoaded(
+                              index
+                            )
+                          }
+                          onError={() =>
+                            markBottleLoaded(
+                              index
+                            )
+                          }
+                          draggable={false}
+                        />
 
-                  )
-                )}
+                      </figure>
 
-              </div>
+                    )
+                  )}
+
+                </div>
+
+              ))}
 
             </div>
 
@@ -314,11 +826,24 @@ function HomePage() {
           id="product"
         >
 
-          <div>
+          <motion.div
+            variants={fadeUp}
+            initial={
+              isMobile
+                ? false
+                : "hidden"
+            }
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.35
+            }}
+          >
 
             <div className="section-label">
               Нишевый уход
             </div>
+
 
             <h2>
               Премиальный крем для рук
@@ -326,23 +851,40 @@ function HomePage() {
               с нишевым ароматом
             </h2>
 
+
             <p className="lead">
               Ежедневный уход, который
               делает привычные моменты
               особенными.
             </p>
 
-          </div>
+          </motion.div>
 
 
           <div className="ingredients">
 
             {ingredients.map(
-              (item) => (
+              (item, index) => (
 
-                <article
+                <motion.article
                   className="ingredient"
                   key={item.title}
+                  variants={fadeUp}
+                  initial={
+                    isMobile
+                      ? false
+                      : "hidden"
+                  }
+                  whileInView="visible"
+                  viewport={{
+                    once: true,
+                    amount: 0.25
+                  }}
+                  transition={{
+                    delay: isMobile
+                      ? 0
+                      : index * 0.08
+                  }}
                 >
 
                   <img
@@ -351,7 +893,9 @@ function HomePage() {
                     )}
                     alt=""
                     loading="lazy"
+                    decoding="async"
                   />
+
 
                   <div>
 
@@ -365,7 +909,7 @@ function HomePage() {
 
                   </div>
 
-                </article>
+                </motion.article>
 
               )
             )}
@@ -382,52 +926,91 @@ function HomePage() {
           id="kit"
         >
 
-          <div>
+          <motion.div
+            variants={fadeUp}
+            initial={
+              isMobile
+                ? false
+                : "hidden"
+            }
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.35
+            }}
+          >
 
             <div className="section-label">
               Что внутри
             </div>
 
+
             <h2>
               Всё уже готово для подарка
             </h2>
+
 
             <p className="lead">
               Внутри — всё, что делает
               подарок особенным.
             </p>
 
+
             <p className="lead">
               От премиального ухода до
-              личного послания и маленьких
-              деталей, которые хочется
-              сохранить.
+              личного послания и
+              маленьких деталей, которые
+              хочется сохранить.
             </p>
 
-          </div>
+          </motion.div>
 
 
-          <div className="kit-grid">
+          <div
+            className="kit-grid"
+            onScroll={
+              handleKitScroll
+            }
+          >
 
             {kit.map(
-              (item) => (
+              (item, index) => (
 
-                <article
+                <motion.article
                   className="kit-card"
                   key={item.title}
+                  variants={fadeUp}
+                  initial={
+                    isMobile
+                      ? false
+                      : "hidden"
+                  }
+                  whileInView="visible"
+                  viewport={{
+                    once: true,
+                    amount: 0.25
+                  }}
+                  transition={{
+                    delay: isMobile
+                      ? 0
+                      : index * 0.08
+                  }}
                 >
 
                   <span>
                     {item.number}
                   </span>
 
+
                   <h3>
                     {item.title}
                   </h3>
 
+
                   <p>
                     {item.text}
                   </p>
+
 
                   <img
                     src={asset(
@@ -435,9 +1018,10 @@ function HomePage() {
                     )}
                     alt=""
                     loading="lazy"
+                    decoding="async"
                   />
 
-                </article>
+                </motion.article>
 
               )
             )}
@@ -449,14 +1033,40 @@ function HomePage() {
             className="kit-dots"
             aria-hidden="true"
           >
-            <span className="active" />
-            <span />
-            <span />
-            <span />
+
+            {kit.map(
+              (_, index) => (
+
+                <span
+                  key={index}
+                  className={
+                    index ===
+                    kitActiveIndex
+                      ? "active"
+                      : ""
+                  }
+                />
+
+              )
+            )}
+
           </div>
 
 
-          <div className="note">
+          <motion.div
+            className="note"
+            variants={fadeUp}
+            initial={
+              isMobile
+                ? false
+                : "hidden"
+            }
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.35
+            }}
+          >
 
             <span>♥</span>
 
@@ -464,7 +1074,7 @@ function HomePage() {
             вниманием, чтобы подарок стал
             особенным и личным.
 
-          </div>
+          </motion.div>
 
         </section>
 
@@ -476,11 +1086,25 @@ function HomePage() {
           id="buy"
         >
 
-          <div className="buy-copy">
+          <motion.div
+            className="buy-copy"
+            variants={fadeUp}
+            initial={
+              isMobile
+                ? false
+                : "hidden"
+            }
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.35
+            }}
+          >
 
             <div className="section-label">
               Найдите своё имя
             </div>
+
 
             <h2>
 
@@ -498,12 +1122,25 @@ function HomePage() {
 
             </h2>
 
-          </div>
+          </motion.div>
 
 
           <div className="marketplaces">
 
-            <article className="market-card">
+            <motion.article
+              className="market-card"
+              variants={fadeUp}
+              initial={
+                isMobile
+                  ? false
+                  : "hidden"
+              }
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.35
+              }}
+            >
 
               <img
                 src={asset(
@@ -511,7 +1148,9 @@ function HomePage() {
                 )}
                 alt="Ozon"
                 loading="lazy"
+                decoding="async"
               />
+
 
               <a
                 href="https://www.ozon.ru/seller/imenno-store/"
@@ -529,10 +1168,23 @@ function HomePage() {
 
               </a>
 
-            </article>
+            </motion.article>
 
 
-            <article className="market-card">
+            <motion.article
+              className="market-card"
+              variants={fadeUp}
+              initial={
+                isMobile
+                  ? false
+                  : "hidden"
+              }
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.35
+              }}
+            >
 
               <img
                 src={asset(
@@ -540,7 +1192,9 @@ function HomePage() {
                 )}
                 alt="Wildberries"
                 loading="lazy"
+                decoding="async"
               />
+
 
               <a
                 href="https://www.wildberries.ru/seller/250120152"
@@ -558,11 +1212,12 @@ function HomePage() {
 
               </a>
 
-            </article>
+            </motion.article>
 
           </div>
 
         </section>
+
 
       </main>
 
@@ -582,15 +1237,18 @@ function HomePage() {
               ИМЕННО
             </a>
 
+
             <p>
-              Подарок, который запоминается.
+              Подарок, который
+              запоминается.
             </p>
 
 
             <div className="footer-legal">
 
               <p>
-                ИП Ширинян Давид Торгомович
+                ИП Ширинян Давид
+                Торгомович
               </p>
 
               <p>
